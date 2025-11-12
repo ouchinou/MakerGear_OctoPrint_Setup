@@ -817,7 +817,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 # self._logger.info(self._printer_profile_manager.get_current_or_default()["model"])
                 self._logger.info("Profile: "+self.activeProfile)
 
-                newProfileString = (re.sub('[^\w]','_',self.activeProfile)).upper()
+                newProfileString = (re.sub(r'[^\w]','_',self.activeProfile)).upper()
 
                 with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+') as f:
                     timeString = str(datetime.datetime.now().strftime('%y-%m-%d.%H:%M'))
@@ -1282,7 +1282,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 self._logger.info(self._execute("git -C /home/pi/m3firmware/src fetch --all; git -C /home/pi/m3firmware/src reset --hard; git -C /home/pi/m3firmware/src pull; git -C /home/pi/m3firmware/src checkout 1.1.6"))
                 self._logger.info("printerUpgrade debug position 5.")
 
-                newProfileString = (re.sub('[^\w]','_',newProfile["model"])).upper()
+                newProfileString = (re.sub(r'[^\w]','_',newProfile["model"])).upper()
 
                 with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+') as f:
                     timeString = str(datetime.datetime.now().strftime('%y-%m-%d.%H:%M'))
