@@ -20,12 +20,13 @@ import time
 import datetime
 import errno
 import sys
-import six.moves.urllib.request, six.moves.urllib.error, six.moves.urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 from logging.handlers import TimedRotatingFileHandler
 from logging.handlers import RotatingFileHandler
 from zipfile import *
 from octoprint import __version__
-from six.moves import range
 
 
 
@@ -218,12 +219,12 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 		for i in range(0, iterations+1):
 			self._logger.info("Testing Internet Connection, iteration "+str(i)+" of "+str(iterations)+", timeout of "+str(timeout)+" .")
 			try:
-				response=six.moves.urllib.request.urlopen(url,timeout=timeout)
+				response=urllib.request.urlopen(url,timeout=timeout)
 				self._logger.info("Check Internet Passed.  URL: "+str(url))
 				self.internetConnection = True
 				self._plugin_manager.send_plugin_message("mgsetup", dict(internetConnection = self.internetConnection))
 				return True
-			except six.moves.urllib.error.URLError as err: pass
+			except urllib.error.URLError as err: pass
 			if (i >= iterations):
 				self._logger.info("Testing Internet Connection Failed, iteration "+str(i)+" of "+str(iterations)+", timeout of "+str(timeout)+" .  Looking for URL: "+str(url))
 				self.internetConnection = False
@@ -567,10 +568,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 	def _to_unicode(self, s_or_u, encoding="utf-8", errors="strict"):
 		"""Make sure ``s_or_u`` is a unicode string."""
-		if isinstance(s_or_u, str):
+		if isinstance(s_or_u, bytes):
 			return s_or_u.decode(encoding, errors=errors)
 		else:
-			return s_or_u
+			return str(s_or_u)
 
 	def _execute(self, command, **kwargs):
 		import sarge
@@ -581,10 +582,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 			joined_command = command
 		#_log_call(joined_command)
 
-		# kwargs.update(dict(async=True, stdout=sarge.Capture(), stderr=sarge.Capture()))
+		# kwargs.update(dict(async_=True, stdout=sarge.Capture(), stderr=sarge.Capture()))
 
 		try:
-			p = sarge.run(command, async=True, stdout=sarge.Capture(), stderr=sarge.Capture())
+			p = sarge.run(command, async_=True, stdout=sarge.Capture(), stderr=sarge.Capture())
 			while len(p.commands) == 0:
 				# somewhat ugly... we can't use wait_events because
 				# the events might not be all set if an exception
