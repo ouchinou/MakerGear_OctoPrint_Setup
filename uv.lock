@@ -1,0 +1,72 @@
+version = 1
+revision = 2
+requires-python = ">=3.13"
+
+[[package]]
+name = "appdirs"
+version = "1.4.4"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/d7/d8/05696357e0311f5b5c316d7b95f46c669dd9c15aaeecbb48c7d0aeb88c40/appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128" },
+]
+
+[[package]]
+name = "fissix"
+version = "24.4.24"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+dependencies = [
+    { name = "appdirs" },
+]
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/11/fb/174b49419d4f4d057e65cecba8107a8074a67a3aea59bc80f4e50875b479/fissix-24.4.24.tar.gz", hash = "sha256:7e8f1e448d1ebc1c8be68be8bf71123650710076ea9dcecb7801804b04f43547" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/b4/c9/7d293a9ea42ef05d6260714f8cf641ba64fab438be55312b1c719d4e7cc6/fissix-24.4.24-py3-none-any.whl", hash = "sha256:be7f5c66e9e212bd9b3365c9e8f2453e973d0a645f31c8eba842724adb4c0c50" },
+]
+
+[[package]]
+name = "makergear-octoprint-setup"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "modernize" },
+    { name = "pyupgrade" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "modernize", specifier = ">=0.8.0", index = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" },
+    { name = "pyupgrade", specifier = ">=3.21.1", index = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" },
+]
+
+[[package]]
+name = "modernize"
+version = "0.8.0"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+dependencies = [
+    { name = "fissix" },
+]
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/e5/97/b7bb97eda53d8784b01dee37aa84dbb2212d89a465a913cd53284568c921/modernize-0.8.0.tar.gz", hash = "sha256:1672b4bb19a060a53dd0518cc8f70fc83591c7246e532223459f85d338c60f55" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/73/6d/c381a4b811a3c529626268276512d1b5abef601e45bc04f0e797284b49bc/modernize-0.8.0-py2.py3-none-any.whl", hash = "sha256:b51f930ac9d726903f2c7f9038146d6061a14509140d6e4498827b19b5610120" },
+]
+
+[[package]]
+name = "pyupgrade"
+version = "3.21.1"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+dependencies = [
+    { name = "tokenize-rt" },
+]
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/2b/f8/a9dd640cbfc72b4a82d83298c0f3aadc266c89bbb5794363c74231293556/pyupgrade-3.21.1.tar.gz", hash = "sha256:436fea5d40cb6adbd2f5102e9be1ec7031b807a03368c9f591a34f51584a7a25" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/11/db/6d6ca50dbf9fc98a9ba984ae7552886323fda3a18bc7064fa21c0dbfb20f/pyupgrade-3.21.1-py2.py3-none-any.whl", hash = "sha256:c716c476b0fd58ee8e3fe2358b1fdc319a65fcb8fed765e2d6af9f6eedc3c180" },
+]
+
+[[package]]
+name = "tokenize-rt"
+version = "6.2.0"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/69/ed/8f07e893132d5051d86a553e749d5c89b2a4776eb3a579b72ed61f8559ca/tokenize_rt-6.2.0.tar.gz", hash = "sha256:8439c042b330c553fdbe1758e4a05c0ed460dbbbb24a606f11f0dee75da4cad6" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/33/f0/3fe8c6e69135a845f4106f2ff8b6805638d4e85c264e70114e8126689587/tokenize_rt-6.2.0-py2.py3-none-any.whl", hash = "sha256:a152bf4f249c847a66497a4a95f63376ed68ac6abf092a2f7cfb29d044ecff44" },
+]
