@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from __future__ import print_function
-from __future__ import absolute_import
 import RPi.GPIO as GPIO
 import subprocess, time, socket
 import serial
@@ -106,7 +105,7 @@ def tap():
     #print("cancel and Reset Start")
     subprocess.Popen('sudo -u pi /home/pi/.octoprint/scripts/cancelPrint.sh',shell=True,stdout=subprocess.PIPE)
     
-    logText = dateTimeVal + "Cancel script was activated because the RAMBo reset button  / reset line was tapped. This could also occur because of a software reset RAMBo command"
+    logText = "Cancel script was activated because the RAMBo reset button  / reset line was tapped at  " + dateTimeVal 
     persistentLogFileName = "/home/pi/.octoprint/logs/cancel_and_shutdown_from_reset.log"
     persistentLogfile = open(persistentLogFileName, "a")
     persistentLogfile.write(logText + "\n")
@@ -145,7 +144,7 @@ def shutdownHold():
 
 
 
-  logText = dateTimeVal + "System was Shutdown because the RAMBo reset button  / reset line was held for more than 10 seconds at " 
+  logText = "System was Shutdown because the RAMBo reset button  / reset line was held for more than 10 seconds at " + dateTimeVal 
   persistentLogFileName = "/home/pi/.octoprint/logs/cancel_and_shutdown_from_reset.log"
   persistentLogfile = open(persistentLogFileName, "a")
   persistentLogfile.write(logText + "\n")
@@ -181,7 +180,7 @@ def resetPasswordHold():
   ser.close()
   
 
-  subprocess.Popen('sudo -u pi /home/pi/.octoprint/scripts/stopOctoprint.sh',shell=True,stdout=subprocess.PIPE)
+  #subprocess.Popen('sudo -u pi /home/pi/.octoprint/scripts/stopOctoprint.sh',shell=True,stdout=subprocess.PIPE)
 
 
   subprocess.call(["netconnectcli", "forget_wifi"])
@@ -207,18 +206,18 @@ def resetPasswordHold():
 
 
   #ensure all permissions are correctly set
-  chmodAndLog("/etc/netconnectd.yaml", 0o600,logfile)
-  chmodAndLog("/etc/network/interfaces", 0o644,logfile)
-  chmodAndLog("/home/pi/.octoprint/config.yaml", 0o600,logfile)
-  chmodAndLog("/home/pi/.octoprint/users.yaml", 0o600,logfile)
+  chmodAndLog("/etc/netconnectd.yaml", 0600,logfile)
+  chmodAndLog("/etc/network/interfaces", 0644,logfile)
+  chmodAndLog("/home/pi/.octoprint/config.yaml", 0600,logfile)
+  chmodAndLog("/home/pi/.octoprint/users.yaml", 0600,logfile)
 
   
-  chmodAndLog("/etc/netconnectd.yaml.userold", 0o600,logfile)
-  chmodAndLog("/etc/network/interfaces.userold", 0o644,logfile)
-  chmodAndLog("/home/pi/.octoprint/config.yaml.userold", 0o600,logfile)
-  chmodAndLog("/home/pi/.octoprint/users.yaml.userold", 0o600,logfile)
+  chmodAndLog("/etc/netconnectd.yaml.userold", 0600,logfile)
+  chmodAndLog("/etc/network/interfaces.userold", 0644,logfile)
+  chmodAndLog("/home/pi/.octoprint/config.yaml.userold", 0600,logfile)
+  chmodAndLog("/home/pi/.octoprint/users.yaml.userold", 0600,logfile)
 
-  chmodAndLog("/home/pi/", 0o755,logfile)
+  chmodAndLog("/home/pi/", 0755,logfile)
 
 
   #get GID/UID
@@ -257,7 +256,7 @@ def resetPasswordHold():
 
 
 
-  logText = dateTimeVal + "System was restored because the RAMBo reset button  / reset line was held for more than 60 seconds at See " + logFileName + "for more information"
+  logText = "System was restored because the RAMBo reset button  / reset line was held for more than 60 seconds at " + dateTimeVal + " See " + logFileName + "for more information"
   persistentLogFileName = "/home/pi/.octoprint/logs/cancel_and_shutdown_from_reset.log"
   persistentLogfile = open(persistentLogFileName, "a")
   persistentLogfile.write(logText + "\n")
