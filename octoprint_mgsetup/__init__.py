@@ -229,15 +229,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     def on_after_startup(self):
         self.create_loggers()
         self._logger.info("MGSetup on_after_startup triggered.")
-        # self._logger.info("extruders: "+str(self._printer_profile_manager.get_current()))
-        # self._logger.info("extruders: "+str(self._settings.get(["printerProfiles","currentProfileData","extruder.count"])))
         self.current_position = current_position
         self._logger.info(self.newhost)
         self.checkInternet(3,3,'none')
-        # self._logger.info(self._printer_profile_manager.get_all())
-        # self._logger.info(self._printer_profile_manager.get_current())
         self._logger.info(self._printer_profile_manager.get_all()["_default"]["extruder"]["count"])
-        # self._logger.info(__version__)
 
 
         subprocess.call("/home/pi/.octoprint/scripts/hosts.sh") #recreate hostsname.js for external devices/ print finder
@@ -431,25 +426,15 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
             return
 
         if event == Events.CLIENT_OPENED:
-            #self._logger.info(payload + " connected")
-            #self.serial = ""
             self.sendCurrentValues()
             self._logger.info(self._printer_profile_manager.get_current_or_default())
-            # self._plugin_manager.send_plugin_message("mgsetup", dict(zoffsetline = self.zoffsetline))
-            # self._plugin_manager.send_plugin_message("mgsetup", dict(tooloffsetline = self.tooloffsetline))
             self._plugin_manager.send_plugin_message("mgsetup", dict(ip = self.ip))
             self._plugin_manager.send_plugin_message("mgsetup", dict(octoprintVersion = __version__))
             self._plugin_manager.send_plugin_message("mgsetup", dict(mgsetupVersion = self._plugin_version))
             self._plugin_manager.send_plugin_message("mgsetup", dict(smbpatchstring = self.smbpatchstring))
 
-
-            # self._plugin_manager.send_plugin_message("mgsetup", dict(firmwareline = self.firmwareline))
-            # self._plugin_manager.send_plugin_message("mgsetup", dict(probeOffsetLine = self.probeOffsetLine))
             self._logger.info(str(self.nextReminder))
-            #if (self.internetConnection == False ):
             self.checkInternet(3,5, 'none')
-            #else:
-            #       self._plugin_manager.send_plugin_message("mgsetup", dict(internetConnection = self.internetConnection))
 
             if (self.activated == False) or (self.registered ==False):
                 if (self.nextReminder <= time.mktime(time.gmtime())) and (self.nextReminder > 0):
@@ -659,9 +644,6 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
     def counterTest(self, actionMaybe):
         self._execute("/home/pi/.octoprint/scripts/counter.sh")
-        #p = subprocess.call("/home/pi/.octoprint/scripts/counter.sh", shell=True)
-        #while p.poll():
-        #       self._logger.info(p.readline())
 
     def backUpConfigYaml(self):
         try:
@@ -763,11 +745,6 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 
 
-                # self._logger.info("extruders: "+str( ( self._printer_profile_manager.get_all() [ self.activeProfile ]["extruder"]["count"] ) ) )
-                # self.extruderCount = ( self._printer_profile_manager.get_all() [ self.activeProfile ]["extruder"]["count"] )
-
-                # self._printer_profile_manager.get_all().get_current()["extruder"]["counter"]
-                # self._logger.info("extruders: "+str(self._printer_profile_manager.get_all().get_current()["extruder"]["counter"]))
                 if (self.extruderCount == 2):
                     try:
                         shutil.copyfile('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h.m3ID','/home/pi/m3firmware/src/Marlin/Configuration_makergear.h')
@@ -792,11 +769,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
             else:
 
-
-
-                # self._logger.info(self._printer_profile_manager.get_current_or_default()["extruder"]["count"])
                 self.activeProfile = (self._printer_profile_manager.get_current_or_default()["model"])
-                # self._logger.info(self._printer_profile_manager.get_current_or_default()["model"])
                 self._logger.info("Profile: "+self.activeProfile)
 
                 newProfileString = (re.sub(r'[^\w]','_',self.activeProfile)).upper()
@@ -845,10 +818,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     def sendCurrentValues(self):
         self.printerValueVersion = time.time()
         self._plugin_manager.send_plugin_message("mgsetup", dict(zoffsetline = self.zoffsetline,
-                                                                                                                        tooloffsetline = self.tooloffsetline,
-                                                                                                                        firmwareline = self.firmwareline,
-                                                                                                                        probeOffsetLine = self.probeOffsetLine,
-                                                                                                                        printerValueVersion = self.printerValueVersion)
+                                                            	tooloffsetline = self.tooloffsetline,
+                                                                firmwareline = self.firmwareline,
+                                                                probeOffsetLine = self.probeOffsetLine,
+                                                                printerValueVersion = self.printerValueVersion)
         )
 
     def sendValues(self, clientVersion = -1):
@@ -861,9 +834,6 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
     def get_api_commands(self):
         self._logger.info("MGSetup get_api_commands triggered.")
-        #self._logger.info("M114 sent to printer.")
-        #self._printer.commands("M114")
-        #self.position_state = "stale"
         return dict(turnSshOn=[],
                 turnSshOff=[],
                 adminAction=["action"],
@@ -898,21 +868,14 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
         if self.printActive:
             # self._logger.debug("printActive true, skipping filters.")
-            # self._logger.info("printActive true, skipping filters - info")
             return line
 
-        # if "M206" not in line and "M218" not in line and "FIRMWARE_NAME" not in line and "Error" not in line and "z_min" not in line and "Bed X:" not in line and "M851" not in line:
-        #       return line
         newValuesPresent = False
         watchCommands = ["M206", "M218", "FIRMWARE_NAME", "Error", "z_min", "Bed X:", "M851", "= [[ ", "Settings Stored"]
 
         if not any([x in line for x in watchCommands]):
             return line
 
-        # if ("M206" or "M218" or "FIRMWARE_NAME" or "Error" or "z_min" or "Bed X:" or "M851" or "= [[ ") not in line:
-        #       return line
-
-        # logging.getLogger("octoprint.plugin." + __name__ + "process_z_offset triggered")
         if "MGERR" in line:
             self._logger.info("process_z_offset triggered - MGERR !")
             self._plugin_manager.send_plugin_message("mgsetup", dict(mgerrorline = line))
@@ -1006,15 +969,12 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 
     def disableSmb(self):
-        # if "dtoverlay=pi3-disable-wifi" in open('/boot/config.txt'):
         self._execute('sudo systemctl disable smbd')
 
     def enableSmb(self):
-        # if "dtoverlay=pi3-disable-wifi" in open('/boot/config.txt'):
         self._execute('sudo systemctl emable smbd')
 
     def patchSmb(self):
-        # if "dtoverlay=pi3-disable-wifi" in open('/boot/config.txt'):
 
         self._execute('echo "Patching SMB"')
         self._execute('sudo cp '+self._basefolder+'/static/maintenance/system/smbPatched.conf /etc/samba/smb.conf')
