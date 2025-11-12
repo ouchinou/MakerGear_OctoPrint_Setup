@@ -112,17 +112,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         firstRunHandler.setFormatter(formatter)
         permanentHandler.setFormatter(formatter)
         self.mgLogger.addHandler(handler)
-        # self.mgLogger.addHandler(firstRunHandler)
-        # self.mgLogger.addHandler(permanentHandler)
         self.mgLoggerPermanent.addHandler(permanentHandler)
         self.mgLoggerFirstRun.addHandler(firstRunHandler)
 
-
-        # self.mgLogger.info("on_after_startup mgLogger test!")
         self.mgLog("general test",0)
-        # self.mgLog("permanent test",2)
-        # self.mgLog("firstrun test",3)
-        # self.mgLog("permanent and first run test",4)
 
 
 
@@ -174,7 +167,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
             self._logger.info("Retrieved serialNumber from Settings.")
         else:
             if os.path.isfile('/boot/serial.txt'):
-                with open('/boot/serial.txt', 'r') as f:
+                with open('/boot/serial.txt', 'r', encoding='utf-8') as f:
                     self.serial = f.readline().strip()
                     self._settings.set(["serialNumber"],self.serial)
                     self._settings.save()
@@ -265,7 +258,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 shutil.copy(full_src_name, dest)
                 self._logger.info("Had to copy "+file_name+" to scripts folder.")
             else:
-                if ((hashlib.md5(open(full_src_name).read()).hexdigest()) != (hashlib.md5(open(full_dest_name).read()).hexdigest())):
+                if ((hashlib.md5(open(full_src_name, 'rb').read()).hexdigest()) != (hashlib.md5(open(full_dest_name, 'rb').read()).hexdigest())):
                     shutil.copy(full_src_name, dest)
                     self._logger.info("Had to overwrite "+file_name+" with new version.")
 
@@ -279,7 +272,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 shutil.copy(full_src_name, dest)
                 self._logger.info("Had to copy "+file_name+" to scripts folder.")
             else:
-                if ((hashlib.md5(open(full_src_name).read()).hexdigest()) != (hashlib.md5(open(full_dest_name).read()).hexdigest())):
+                if ((hashlib.md5(open(full_src_name, 'rb').read()).hexdigest()) != (hashlib.md5(open(full_dest_name, 'rb').read()).hexdigest())):
                     shutil.copy(full_src_name, dest)
                     self._logger.info("Had to overwrite "+file_name+" with new version.")
             if ".sh" in file_name:
@@ -295,35 +288,27 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 shutil.copy(full_src_name, dest)
                 self._logger.info("Had to copy "+file_name+" to scripts folder.")
             else:
-                if ((hashlib.md5(open(full_src_name).read()).hexdigest()) != (hashlib.md5(open(full_dest_name).read()).hexdigest())):
+                if ((hashlib.md5(open(full_src_name, 'rb').read()).hexdigest()) != (hashlib.md5(open(full_dest_name, 'rb').read()).hexdigest())):
                     shutil.copy(full_src_name, dest)
                     self._logger.info("Had to overwrite "+file_name+" with new version.")
         try:
             os.chmod(self._basefolder+"/static/js/hostname.js", 0o666)
         except OSError:
             self._logger.info("Hostname.js doesn't exist?")
-        except:
-            raise
         try:
             os.chmod(self._basefolder+"/static/patch/patch.sh", 0o755)
         except OSError:
             self._logger.info("Patch.sh doesn't exist?")
-        except:
-            raise
         try:
             os.chmod(self._basefolder+"/static/patch/logpatch.sh", 0o755)
         except OSError:
             self._logger.info("logpatch.sh doesn't exist?")
-        except:
-            raise
 
 
         try:
             self.ip = str(([l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]))
         except IOError as e:
             self._logger.info(e)
-        except:
-            raise
         self.getLocalFirmwareVersion()
         self.adminAction(dict(action="sshState"))
         if (self._settings.get(["printing"])):
@@ -348,7 +333,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
         #if
         try:
-            smbHashVal = (hashlib.md5(open("/etc/samba/smb.conf").read()).hexdigest()) # != "03dc1620b398cbe3d2d82e83c20c1905":
+            smbHashVal = (hashlib.md5(open("/etc/samba/smb.conf", 'rb').read()).hexdigest()) # != "03dc1620b398cbe3d2d82e83c20c1905":
             if smbHashVal == "44c057b0ffc7ab0f88c1923bdd32b559":
                 self.smbpatchstring = "Patch Already In Place"
                 self.mgLog("smb.conf hash matches patched file, no need to patch",2)
@@ -604,7 +589,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 self._plugin_manager.send_plugin_message("mgsetup", dict(commandError = p.stderr.readlines(timeout=0.5)))
                 self._plugin_manager.send_plugin_message("mgsetup", dict(commandResponse = p.stdout.readlines(timeout=0.5)))
                 return None, [], []
-        except:
+        except Exception as e:
             #print("Error while trying to run command {}".format(joined_command), file=sys.stderr)
             self._plugin_manager.send_plugin_message("mgsetup", dict(commandError = "Error while trying to run command - 2."))
             self._plugin_manager.send_plugin_message("mgsetup", dict(commandError = p.stderr.readlines(timeout=0.5)))
@@ -615,7 +600,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
         all_stdout = []
         all_stderr = []
-        last_print = None;
+        last_print = None
         try:
             while p.commands[0].poll() is None:
                 errorFlag = None
@@ -631,8 +616,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                     all_stderr = []
                     # self.mgLog(lines,2)
                     errorFlag = True
-                    last_print = True;
-
+                    last_print = True
                 lines = p.stdout.readlines(timeout=0.5)
                 if lines:
                     lines = [self._to_unicode(x, errors="replace") for x in lines]
@@ -642,14 +626,12 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                     self._logger.info(all_stdout)
                     self._plugin_manager.send_plugin_message("mgsetup", dict(commandResponse = all_stdout))
                     all_stdout = []
-                    last_print = True;
+                    last_print = True
                     # self.mgLog(lines,2)
                 else :
                     #if (errorFlag == None) and (last_print == False):
                     #self._plugin_manager.send_plugin_message("mgsetup", dict(commandResponse = "."))
-                    last_print = False;
-
-
+                    last_print = False
         finally:
             p.close()
 
@@ -745,7 +727,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     def getLocalFirmwareVersion(self):
         self._logger.info("local firmware reports itself as: ")
         if os.path.isfile('/home/pi/m3firmware/src/Marlin/Version.h'):
-            with open('/home/pi/m3firmware/src/Marlin/Version.h', 'r') as f:
+            with open('/home/pi/m3firmware/src/Marlin/Version.h', 'r', encoding='utf-8') as f:
                 self.filelines = f.readlines()
                 self._logger.info(self.filelines[37])
                 pattern = r'".+"'
@@ -819,7 +801,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
                 newProfileString = (re.sub(r'[^\w]','_',self.activeProfile)).upper()
 
-                with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+') as f:
+                with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+', encoding='utf-8') as f:
                     timeString = str(datetime.datetime.now().strftime('%y-%m-%d.%H:%M'))
                     oldConfig = f.read()
                     f.seek(0,0)
@@ -850,11 +832,11 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     # octoprint.settings.Settings.set(octoprint.settings.settings(),["appearance", "name"],["MakerGear " +self.newhost])
 
     def writeNetconnectdPassword(self, newPassword):
-        subprocess.call("/home/pi/.octoprint/scripts/changeNetconnectdPassword.sh "+newPassword['password'], shell=True)
+        subprocess.call(["/home/pi/.octoprint/scripts/changeNetconnectdPassword.sh",newPassword['password']], shell=False)
         self._logger.info("Netconnectd password changed to "+newPassword['password']+" !")
 
     def changeHostname(self, newHostname):
-        subprocess.call("/home/pi/.octoprint/scripts/changeHostname.sh "+newHostname['hostname']+" "+self.newhost, shell=True)
+        subprocess.call(["/home/pi/.octoprint/scripts/changeHostname.sh",newHostname['hostname'],self.newhost], shell=False)
         self._logger.info("Hostname changed to "+newHostname['hostname']+" !")
 
     def requestValues(self):
@@ -880,7 +862,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     def get_api_commands(self):
         self._logger.info("MGSetup get_api_commands triggered.")
         #self._logger.info("M114 sent to printer.")
-        #self._printer.commands("M114");
+        #self._printer.commands("M114")
         #self.position_state = "stale"
         return dict(turnSshOn=[],
                 turnSshOff=[],
@@ -995,7 +977,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         except OSError:
             if not os.path.isdir('/home/pi/.mgsetup'):
                 raise
-        f = open('/home/pi/.mgsetup/actkey', 'w')
+        f = open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8')
         f.write("")
         f.close()
         self._settings.set(["registered"], False)
@@ -1008,7 +990,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         if not os.path.isfile('/boot/config.txt.backup'):
             self._execute('sudo cp /boot/config.txt /boot/config.txt.backup')
             self._plugin_manager.send_plugin_message("mgsetup", dict(commandResponse = "Copied config.txt to config.txt.backup ."))
-        if not "dtoverlay=pi3-disable-wifi" in open('/boot/config.txt'):
+        if not "dtoverlay=pi3-disable-wifi" in open('/boot/config.txt', encoding='utf-8').read():
             # f = open('/boot/config.txt', 'a')
             # f.write("\ndtoverlay=pi3-disable-wifi")
             # f.close()
@@ -1043,7 +1025,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
     def lockFirmware(self):
         if not os.path.isfile('/home/pi/m3firmware/src/Marlin/lockFirmware'):
-            open('/home/pi/m3firmware/src/Marlin/lockFirmware','a').close()
+            open('/home/pi/m3firmware/src/Marlin/lockFirmware','a', encoding='utf-8').close()
             self._logger.info("Firmware lock file created.")
             self._plugin_manager.send_plugin_message("mgsetup", dict(commandError = "Firmware lock file created!"))
 
@@ -1068,7 +1050,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 
 
-    def adminAction(self, action, payload={}):
+    def adminAction(self, action, payload=None):
         self._logger.info("adminAction called: "+ str(action))
         if action["action"] == 'turnSshOn':
             #self.turnSshOn()
@@ -1176,7 +1158,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
             #subprocess.call("/home/pi/oprint/local/lib/python2.7/site-packages/octoprint_mgsetup/static/patch/logpatch.sh")
             self.mgLog(self._execute("/home/pi/oprint/local/lib/python2.7/site-packages/octoprint_mgsetup/static/patch/logpatch.sh"),2)
 
-            # if not os.path.isfile("/home/pi/.octoprint/logs/dmesg"):
+            #-+ if not os.path.isfile("/home/pi/.octoprint/logs/dmesg"):
             #       if os.path.isfile("/var/log/dmesg"):
             #               try:
             #                       os.symlink("/var/log/dmesg","/home/pi/.octoprint/logs/dmesg")
@@ -1284,7 +1266,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
                 newProfileString = (re.sub(r'[^\w]','_',newProfile["model"])).upper()
 
-                with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+') as f:
+                with open('/home/pi/m3firmware/src/Marlin/Configuration_makergear.h','r+', encoding='utf-8') as f:
                     timeString = str(datetime.datetime.now().strftime('%y-%m-%d.%H:%M'))
                     oldConfig = f.read()
                     f.seek(0,0)
@@ -1386,7 +1368,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         except OSError:
             if not os.path.isdir('/home/pi/.mgsetup'):
                 raise
-        f = open('/home/pi/.mgsetup/actkey', 'w')
+        f = open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8')
         f.write(activation["activation"])
         f.close()
         self._settings.set(["registered"], True)
@@ -1394,7 +1376,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 
     def checkActivation(self, userActivation):
-        with open('/home/pi/.mgsetup/actkey', 'r') as f:
+        with open('/home/pi/.mgsetup/actkey', 'r', encoding='utf-8') as f:
             self.activation = f.readline().strip()
             if (self.activation == userActivation['userActivation']):
                 self._logger.info("Activation successful!")
