@@ -12,6 +12,18 @@ wheels = [
 ]
 
 [[package]]
+name = "autopep8"
+version = "2.3.2"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+dependencies = [
+    { name = "pycodestyle" },
+]
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/50/d8/30873d2b7b57dee9263e53d142da044c4600a46f2d28374b3e38b023df16/autopep8-2.3.2.tar.gz", hash = "sha256:89440a4f969197b69a995e4ce0661b031f455a9f776d2c5ba3dbd83466931758" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/9e/43/53afb8ba17218f19b77c7834128566c5bbb100a0ad9ba2e8e89d089d7079/autopep8-2.3.2-py2.py3-none-any.whl", hash = "sha256:ce8ad498672c845a0c3de2629c15b635ec2b05ef8177a6e7c91c74f3e9b51128" },
+]
+
+[[package]]
 name = "fissix"
 version = "24.4.24"
 source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
@@ -28,12 +40,14 @@ name = "makergear-octoprint-setup"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "autopep8" },
     { name = "modernize" },
     { name = "pyupgrade" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "autopep8", specifier = ">=2.3.2", index = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" },
     { name = "modernize", specifier = ">=0.8.0", index = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" },
     { name = "pyupgrade", specifier = ">=3.21.1", index = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" },
 ]
@@ -48,6 +62,15 @@ dependencies = [
 sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/e5/97/b7bb97eda53d8784b01dee37aa84dbb2212d89a465a913cd53284568c921/modernize-0.8.0.tar.gz", hash = "sha256:1672b4bb19a060a53dd0518cc8f70fc83591c7246e532223459f85d338c60f55" }
 wheels = [
     { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/73/6d/c381a4b811a3c529626268276512d1b5abef601e45bc04f0e797284b49bc/modernize-0.8.0-py2.py3-none-any.whl", hash = "sha256:b51f930ac9d726903f2c7f9038146d6061a14509140d6e4498827b19b5610120" },
+]
+
+[[package]]
+name = "pycodestyle"
+version = "2.14.0"
+source = { registry = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/simple" }
+sdist = { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/11/e0/abfd2a0d2efe47670df87f3e3a0e2edda42f055053c85361f19c0e2c1ca8/pycodestyle-2.14.0.tar.gz", hash = "sha256:c4b5b517d278089ff9d0abdec919cd97262a3367449ea1c8b49b91529167b783" }
+wheels = [
+    { url = "https://cochlear.jfrog.io/artifactory/api/pypi/coh-esw-pip/packages/packages/d7/27/a58ddaf8c588a3ef080db9d0b7e0b97215cee3a45df74f3a94dbbf5c893a/pycodestyle-2.14.0-py2.py3-none-any.whl", hash = "sha256:dd6bf7cb4ee77f8e016f9c8e74a35ddd9f67e1d5fd4184d86c3b98e07099f42d" },
 ]
 
 [[package]]
