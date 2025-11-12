@@ -940,9 +940,8 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         except OSError:
             if not os.path.isdir('/home/pi/.mgsetup'):
                 raise
-        f = open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8')
-        f.write("")
-        f.close()
+        with open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8') as f:
+            f.write("")
         self._settings.set(["registered"], False)
         self._settings.set(["activated"], False)
         self._settings.save()
@@ -1328,9 +1327,8 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         except OSError:
             if not os.path.isdir('/home/pi/.mgsetup'):
                 raise
-        f = open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8')
-        f.write(activation["activation"])
-        f.close()
+        with open('/home/pi/.mgsetup/actkey', 'w', encoding='utf-8') as f:
+            f.write(activation["activation"])
         self._settings.set(["registered"], True)
         self._settings.save()
 
