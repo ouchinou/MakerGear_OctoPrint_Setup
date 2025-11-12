@@ -19,7 +19,7 @@ plugin_name = "OctoPrint-Mgsetup"
 
 # The plugin's version. Can be overwritten within OctoPrint's internal
 # data via __plugin_version__ in the plugin module
-plugin_version = "0.4.2.0"
+plugin_version = "0.4.1.0"
 
 
 # The plugin's description. Can be overwritten within OctoPrint's internal data via __plugin_description__ in the plugin
@@ -35,7 +35,7 @@ plugin_author_email = "josh@makergear.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's
 # internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/MakerGear/MakerGear_OctoPrint_Setup"
+plugin_url = "https://github.com/ouchinou/MakerGear_OctoPrint_Setup"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal
 # data via __plugin_license__ in the plugin module
