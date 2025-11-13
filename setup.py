@@ -1,8 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
-from __future__ import print_function
-
-from setuptools import setup
 
 ##########################################################################
 # Do not forget to adjust the following variables to your own plugin.
@@ -74,6 +70,7 @@ additional_setup_parameters = {}
 
 ##########################################################################
 
+from setuptools import setup
 
 try:
     import octoprint_setuptools
