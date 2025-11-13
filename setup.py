@@ -1,12 +1,13 @@
 # coding=utf-8
+from __future__ import absolute_import
+from __future__ import print_function
+
+from setuptools import setup
 
 ##########################################################################
 # Do not forget to adjust the following variables to your own plugin.
 
 # The plugin's identifier, has to be unique
-from __future__ import absolute_import
-from setuptools import setup
-from __future__ import print_function
 plugin_identifier = "mgsetup"
 
 # The plugin's python package, should be "octoprint_<plugin identifier>",
