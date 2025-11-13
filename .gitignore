@@ -60,3 +60,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Local development files
+pyproject.toml
+.venv/
+uv.lock
