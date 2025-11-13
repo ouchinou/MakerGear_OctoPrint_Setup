@@ -17,8 +17,6 @@
 # marlin to another.
 
 
-from __future__ import absolute_import
-from __future__ import print_function
 import serial
 import re
 import os

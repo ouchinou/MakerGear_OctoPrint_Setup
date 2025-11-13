@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-from __future__ import print_function
-from __future__ import absolute_import
 import RPi.GPIO as GPIO
 import subprocess
 import time
