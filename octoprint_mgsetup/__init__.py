@@ -1764,6 +1764,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
 
 __plugin_name__ = "MakerGear Setup"
+__plugin_pythoncompat__ = ">=3.7,<4"
 
 __plugin_implementation__ = MGSetupPlugin()
 
