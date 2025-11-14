@@ -505,11 +505,10 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
         self._logger.info("MGSetup get_assets triggered.")
         return dict(
             js=["js/mgsetup.js", "js/mgsetup_maintenance.js"],
-            css=["css/mgsetup.css", "css/overrides.css"],
-            img=["img/*"],
-            gcode=["gcode/*"],
-            videojs=["video-js/*"]
+            css=["css/mgsetup.css", "css/overrides.css"]
         )
+        # Note: img/*, gcode/*, video-js/* files are accessible via
+        # /plugin/mgsetup/static/ and should not be in get_assets()
 
     def remindLater(self):
         self._logger.info("MGSetup remindLater triggered.")
