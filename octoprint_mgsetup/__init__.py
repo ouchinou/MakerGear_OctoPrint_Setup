@@ -3,7 +3,6 @@
 import re
 
 
-import subprocess
 import os
 import shutil
 import hashlib
@@ -13,15 +12,13 @@ import yaml
 import octoprint.plugin
 import octoprint.settings
 from octoprint.events import Events
-import flask
+from flask import jsonify, make_response
 import traceback
 import time
 import datetime
 import errno
 import sys
-import urllib.request
-import urllib.error
-import urllib.parse
+import requests
 from logging.handlers import TimedRotatingFileHandler
 from logging.handlers import RotatingFileHandler
 from zipfile import *
@@ -260,13 +257,14 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                 str(timeout) +
                 " .")
             try:
-                response = urllib.request.urlopen(url, timeout=timeout)
+                response = requests.get(url, timeout=timeout)
+                response.raise_for_status()
                 self._logger.info("Check Internet Passed.  URL: " + str(url))
                 self.internetConnection = True
                 self._plugin_manager.send_plugin_message(
                     "mgsetup", dict(internetConnection=self.internetConnection))
                 return True
-            except urllib.error.URLError as err:
+            except requests.exceptions.RequestException as err:
                 pass
             if (i >= iterations):
                 self._logger.info(
@@ -293,7 +291,7 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
                           "_default"]["extruder"]["count"])
 
         # recreate hostsname.js for external devices/ print finder
-        subprocess.call("/home/pi/.octoprint/scripts/hosts.sh")
+        self._execute(["/home/pi/.octoprint/scripts/hosts.sh"])
 
         try:  # a bunch of code with minor error checking and user alert...ion to copy scripts to the right location; should only ever need to be run once
             os.makedirs('/home/pi/.octoprint/scripts/gcode')
@@ -1043,19 +1041,18 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
     # octoprint.settings.Settings.set(octoprint.settings.settings(),["appearance", "name"],["MakerGear " +self.newhost])
 
     def writeNetconnectdPassword(self, newPassword):
-        subprocess.call(
+        self._execute(
             [
                 "/home/pi/.octoprint/scripts/changeNetconnectdPassword.sh",
-                newPassword['password']],
-            shell=False)
+                newPassword['password']])
         self._logger.info(
             "Netconnectd password changed to " +
             newPassword['password'] +
             " !")
 
     def changeHostname(self, newHostname):
-        subprocess.call(["/home/pi/.octoprint/scripts/changeHostname.sh",
-                        newHostname['hostname'], self.newhost], shell=False)
+        self._execute(["/home/pi/.octoprint/scripts/changeHostname.sh",
+                        newHostname['hostname'], self.newhost])
         self._logger.info(
             "Hostname changed to " +
             newHostname['hostname'] +
@@ -1102,11 +1099,12 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
 
     def on_api_get(self, request):
         self._logger.info("MGSetup on_api_get triggered.")
-        return flask.jsonify(dict(
+        data = dict(
             currentposition=self.current_position,
-            positionstate=self.position_state)
+            positionstate=self.position_state
         )
         self.position_state = "stale"
+        return jsonify(data)
 
     def process_z_offset(self, comm, line, *args, **kwargs):
 
@@ -1618,12 +1616,12 @@ class MGSetupPlugin(octoprint.plugin.StartupPlugin,
             self._logger.info("printerUpgrade debug position 8.")
 
     def turnSshOn(self):
-        subprocess.call("/home/pi/.octoprint/scripts/startSsh.sh")
+        self._execute(["/home/pi/.octoprint/scripts/startSsh.sh"])
         self._logger.info("SSH service started!")
         self.adminAction(dict(action="sshState"))
 
     def turnSshOff(self):
-        subprocess.call("/home/pi/.octoprint/scripts/stopSsh.sh")
+        self._execute(["/home/pi/.octoprint/scripts/stopSsh.sh"])
         self._logger.info("SSH service stopped!")
         self.adminAction(dict(action="sshState"))
 
