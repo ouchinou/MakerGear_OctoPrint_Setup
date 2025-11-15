@@ -1,2 +1,7 @@
 include README.md
-recursive-include octoprint_mgsetup *
+include requirements.txt
+recursive-include octoprint_mgsetup/templates *
+recursive-include octoprint_mgsetup/static *
+recursive-include octoprint_mgsetup/translations *
+global-exclude __pycache__
+global-exclude *.py[co]
