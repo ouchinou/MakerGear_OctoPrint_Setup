@@ -167,7 +167,8 @@ $(function() {
 		self.tools(self.temperatures.tools());
 
 		self.isDual = ko.pureComputed(function(){
-			if (self.settings.printerProfiles.currentProfileData().extruder.count() == 2){
+			var currentProfile = self.settings.printerProfiles.currentProfileData();
+		if (currentProfile && currentProfile.extruder && currentProfile.extruder.count() == 2){
 				self.mgLog("We're a Dual!");
 				return true;
 			} else {
@@ -213,7 +214,7 @@ $(function() {
 		self.printerViewString = ko.observable(undefined);
 		self.apiKey = ko.observable(undefined);
 		self.printerViewString = ko.pureComputed(function(){
-			if ((self.settings.api_enabled()) && (self.settings.api_allowCrossOrigin())){
+			if ((self.settings.api && self.settings.api.enabled && self.settings.api.enabled()) && (self.settings.api && self.settings.api.allowCrossOrigin && self.settings.api.allowCrossOrigin())){
 				if ((self.ipAddress()!==undefined) && (self.hostnameJS() !== undefined) && (self.ipPort()!== undefined) ){
 					return ("IP:"+self.ipAddress().toString()+"|HOSTNAME:"+self.hostnameJS()+"|PORT:"+self.ipPort()+"|API:"+self.apiKey());
 				} else {
@@ -4652,16 +4653,17 @@ $(function() {
 			self.requestData();
 		};
 
-		self.onAllBound = function() {
-			console.log("onAllBound triggered.");
+	self.onAllBound = function() {
+		console.log("onAllBound triggered.");
 
+		// Check if tools are available before accessing
+		if (self.temperatures.tools() && self.temperatures.tools().length > 0 && self.temperatures.tools()[0].actual) {
 			console.log(self.temperatures.tools()[0].actual());
+		} else {
+			console.log("Temperature tools not yet available");
+		}
 
-
-
-		};
-
-
+	};
 		self.onStartupComplete = function() {
 			self.mgLog("onStartupComplete triggered.");
 			self.mgLogUrl = OctoPrint.getSimpleApiUrl("mgsetup");
@@ -5359,8 +5361,12 @@ $(function() {
 
 
 		self.parseProfile = function() {
-
-			self.profileString(self.settings.printerProfiles.currentProfileData().model().toString());
+		var currentProfile = self.settings.printerProfiles.currentProfileData();
+		if (!currentProfile || !currentProfile.model) {
+			self.mgLog("Profile data not yet loaded, skipping parseProfile");
+			return;
+		}
+		self.profileString(currentProfile.model().toString());
 			self.mgLog("profileString:");
 			self.mgLog(self.profileString());
 			if (self.profileString() === ""){

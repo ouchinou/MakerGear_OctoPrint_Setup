@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OctoPrint-Mgsetup"
+version = "0.4.1.0"
+description = "MakerGear OctoPrint Setup Plugin"
+authors = [
+    {name = "MGDevTeam", email = "josh@makergear.com"}
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+
+requires-python = ">=3.7, <4"
+
+# any additional requirements (besides OctoPrint) should be listed here
+dependencies = []
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = [
+    "octoprint_mgsetup",
+    "octoprint_mgsetup.*"
+]
+
+[project.entry-points."octoprint.plugin"]
+mgsetup = "octoprint_mgsetup"
+
+[project.urls]
+Homepage = "https://github.com/ouchinou/MakerGear_OctoPrint_Setup"
+
+[project.optional-dependencies]
+develop = [
+    "autopep8>=2.3.2",
+    "modernize>=0.8.0",
+    "pyupgrade>=3.21.1",
+]
